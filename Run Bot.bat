@@ -1,0 +1,1 @@
+start cmd.exe /k "py C:\Users\Luis\Desktop\Python\Bot.py"

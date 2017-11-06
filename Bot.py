@@ -9,6 +9,10 @@ print("League of Legends Tool!")
 print("Made by Kronic Vayne, Version: 0.1")
 print("----------------------------------")
 #Getting Summoner Name(Replacing Spaces with %20 for url usage)
+def analyzeMatch(matchId):
+    print(matchId)
+
+
 def matchHistory(id):
     print("Showing Match History for " + Summoner_Raw)
     MatchHistory = 'https://na1.api.riotgames.com/lol/match/v3/matchlists/by-account/' + str(id) +'/recent?api_key=' + RIOT_API_KEY
@@ -21,10 +25,19 @@ def matchHistory(id):
         
         tempChampionURL = 'https://na1.api.riotgames.com/lol/static-data/v3/champions/' + str(tempChampId) + '?locale=en_US&api_key=' + RIOT_API_KEY
         tempChamp_json = requests.get(tempChampionURL).json()
-        #champ = tempChamp_json['name']
-
-        print(tempChamp_json)
+        try:
+            champ = tempChamp_json['name']
+        except:
+            print("Riot API Error")
+            break
+        print("(" + str(cMatches) + ") Champion: " + champ)
         cMatches += 1
+    matchChoice = int(input("Choose which match you want to analyze: "))
+    matchId = match_history_json['matches'][matchChoice]['gameId']
+
+
+
+    analyzeMatch(matchId)
         
     
 while True:

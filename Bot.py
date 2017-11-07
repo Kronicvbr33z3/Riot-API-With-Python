@@ -11,28 +11,39 @@ print("----------------------------------")
 #Getting Summoner Name(Replacing Spaces with %20 for url usage)
 def analyzeMatch(matchId):
     print("Match ID: " + str(matchId))
+    print()
     MatchURL = 'https://na1.api.riotgames.com/lol/match/v3/matches/' + str(matchId) + '?api_key=' + RIOT_API_KEY
     match_json = requests.get(MatchURL).json()
-    foundPlayer = False
+    print(match_json)
+    
+    print("~Match Overview~")
     
     i = 0
-    participantId = 0
-    while i >= 10:
-      
-      tempPlayer = match_json['participantIdentities'][i]['currentAccountId']
-      print(tempPlayer)
-      i += 1 
-      """
-      if tempPlayer == Summoner_Raw:
-        participantId =  match_json['participantIdentities'][i]['participantId']
-        
-        foundPlayer = True
-      else:
-        i += 1
-      """
+    start = False
+    check = True
+
+    while i <= 9:
+        tempId = match_json['participantIdentities'][i]['participantId']
+        tempPlayer = match_json['participantIdentities'][i]['player']['summonerName']
+
+        if i > 4:
+            team = 2
+            if check:
+                start = False
+                check = False
+            
+        else:
+            team = 1
+
+        if start == False:
+            print()
+            print("~TEAM  " + str(team) + "~")
     
-
-
+            start = True
+        
+        print(tempPlayer)
+        i += 1 
+    
 def matchHistory(id):
     print("Showing Match History for " + Summoner_Raw)
     MatchHistory = 'https://na1.api.riotgames.com/lol/match/v3/matchlists/by-account/' + str(id) +'/recent?api_key=' + RIOT_API_KEY

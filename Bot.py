@@ -1,31 +1,33 @@
-
 import requests
 """
 Tool that will provide information about a summoner in python
 """
-RIOT_API_KEY = 'RGAPI-f1784676-86a3-4132-9990-c27271266577'
+RIOT_API_KEY = 'RGAPI-74868258-c231-4941-8f53-62c2036315e1'
 status = "OK"
 print("League of Legends Tool!")
 print("Made by Kronic Vayne, Version: 0.1")
 print("----------------------------------")
-#Getting Summoner Name(Replacing Spaces with %20 for url usage)
+
 def analyzeMatch(matchId):
     print("Match ID: " + str(matchId))
     print()
     MatchURL = 'https://na1.api.riotgames.com/lol/match/v3/matches/' + str(matchId) + '?api_key=' + RIOT_API_KEY
     match_json = requests.get(MatchURL).json()
-    print(match_json)
     
     print("~Match Overview~")
     
     i = 0
+    userId = 0
     start = False
     check = True
 
     while i <= 9:
         tempId = match_json['participantIdentities'][i]['participantId']
         tempPlayer = match_json['participantIdentities'][i]['player']['summonerName']
-
+        tempData = match_json['participants'][3]
+        if tempPlayer == Summoner_Raw:
+          userId = tempId
+        
         if i > 4:
             team = 2
             if check:
@@ -41,8 +43,9 @@ def analyzeMatch(matchId):
     
             start = True
         
-        print(tempPlayer)
-        i += 1 
+        print("Player: " + tempPlayer + " ID: " + str(tempId))
+        i += 1
+    print(tempData)
     
 def matchHistory(id):
     print("Showing Match History for " + Summoner_Raw)

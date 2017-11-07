@@ -10,7 +10,6 @@ print("Made by Kronic Vayne, Version: 0.1")
 print("----------------------------------")
 #Getting Summoner Name(Replacing Spaces with %20 for url usage)
 def analyzeMatch(matchId):
-    print("Match ID: " + str(matchId))
     MatchURL = 'https://na1.api.riotgames.com/lol/match/v3/matches/' + str(matchId) + '?api_key=' + RIOT_API_KEY
     match_json = requests.get(MatchURL).json()
     foundPlayer = False
@@ -32,9 +31,6 @@ def analyzeMatch(matchId):
       """
     
 
-
-def matchHistory(id):
-    print("Showing Match History for " + Summoner_Raw)
     MatchHistory = 'https://na1.api.riotgames.com/lol/match/v3/matchlists/by-account/' + str(id) +'/recent?api_key=' + RIOT_API_KEY
     match_history_json = requests.get(MatchHistory).json()
     mMatches = match_history_json['endIndex']

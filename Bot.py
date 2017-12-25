@@ -1,11 +1,12 @@
 import requests
+from decimal import Decimal
 """
 Tool that will provide information about a summoner in python
 """
-RIOT_API_KEY = 'RGAPI-74868258-c231-4941-8f53-62c2036315e1'
+RIOT_API_KEY = 'RGAPI-47007e50-f48c-44bb-aef8-98d7d1e85555'
 status = "OK"
 print("League of Legends Tool!")
-print("Made by Kronic Vayne, Version: 0.1")
+print("Made by Kronic Vayne, Version: 0.3")
 print("----------------------------------")
 
 def analyzeMatch(matchId):
@@ -24,7 +25,15 @@ def analyzeMatch(matchId):
     while i <= 9:
         tempId = match_json['participantIdentities'][i]['participantId']
         tempPlayer = match_json['participantIdentities'][i]['player']['summonerName']
-        tempData = match_json['participants'][3]
+        tempKills = match_json['participants'][i]['stats']['kills']
+        tempDeaths = match_json['participants'][i]['stats']['deaths']
+        tempAssists = match_json['participants'][i]['stats']['assists']
+        
+        tempCS010 = match_json['participants'][i]['timeline']['creepsPerMinDeltas']['0-10']
+        tempCS1020 = match_json['participants'][i]['timeline']['creepsPerMinDeltas']['10-20']
+        TempCS = (tempCS010 + tempCS1020) / 2
+        TempCSRounded = round(TempCS, 2)
+        
         if tempPlayer == Summoner_Raw:
           userId = tempId
         
@@ -43,9 +52,12 @@ def analyzeMatch(matchId):
     
             start = True
         
-        print("Player: " + tempPlayer + " ID: " + str(tempId))
+        print(tempPlayer + " " + str(tempKills) + "/" + str(tempDeaths) + "/" + str(tempAssists) + " (" + str(TempCSRounded) + ")")
+        
         i += 1
-    print(tempData)
+        #print(tempData)
+    print("----------------------")
+    print()
     
 def matchHistory(id):
     print("Showing Match History for " + Summoner_Raw)

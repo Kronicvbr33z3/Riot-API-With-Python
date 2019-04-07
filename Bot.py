@@ -3,7 +3,7 @@ from decimal import Decimal
 """
 Tool that will provide information about a summoner in python
 """
-RIOT_API_KEY = 'RGAPI-47007e50-f48c-44bb-aef8-98d7d1e85555'
+RIOT_API_KEY = 'RGAPI-13f58c4b-2b86-455b-bd31-c49c62866531'
 status = "OK"
 print("League of Legends Tool!")
 print("Made by Kronic Vayne, Version: 0.3")

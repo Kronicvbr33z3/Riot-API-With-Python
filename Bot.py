@@ -1,4 +1,5 @@
 import requests
+import json
 from decimal import Decimal
 """
 Tool that will provide information about a summoner in python
@@ -6,13 +7,13 @@ Tool that will provide information about a summoner in python
 RIOT_API_KEY = 'RGAPI-13f58c4b-2b86-455b-bd31-c49c62866531'
 status = "OK"
 print("League of Legends Tool!")
-print("Made by Kronic Vayne, Version: 0.3")
+print("Made by Kronic, Version: 0.3")
 print("----------------------------------")
 
 def analyzeMatch(matchId):
     print("Match ID: " + str(matchId))
     print()
-    MatchURL = 'https://na1.api.riotgames.com/lol/match/v3/matches/' + str(matchId) + '?api_key=' + RIOT_API_KEY
+    MatchURL = 'https://na1.api.riotgames.com/lol/match/v4/matches/' + str(matchId) + '?api_key=' + RIOT_API_KEY
     match_json = requests.get(MatchURL).json()
     
     print("~Match Overview~")
@@ -61,15 +62,13 @@ def analyzeMatch(matchId):
     
 def matchHistory(id):
     print("Showing Match History for " + Summoner_Raw)
-    MatchHistory = 'https://na1.api.riotgames.com/lol/match/v3/matchlists/by-account/' + str(id) +'/recent?api_key=' + RIOT_API_KEY
+    MatchHistory = 'https://na1.api.riotgames.com/lol/match/v4/matchlists/by-account/' + str(id) + "?endIndex=20&beginIndex=0&" +'api_key=' + RIOT_API_KEY 
     match_history_json = requests.get(MatchHistory).json()
-    mMatches = match_history_json['endIndex']
-    cMatches = match_history_json['startIndex']
-    
-    while cMatches <= 5:
+    cMatches = 0
+    while cMatches <= 20:
         tempChampId = match_history_json['matches'][cMatches]['champion']
         
-        tempChampionURL = 'https://na1.api.riotgames.com/lol/static-data/v3/champions/' + str(tempChampId) + '?locale=en_US&api_key=' + RIOT_API_KEY
+        tempChampionURL = 'https://na1.api.riotgames.com/lol/static-data/v4/champions/' + str(tempChampId) + '?locale=en_US&api_key=' + RIOT_API_KEY
         tempChamp_json = requests.get(tempChampionURL).json()
         try:
             champ = tempChamp_json['name']
@@ -85,7 +84,33 @@ def matchHistory(id):
 
     analyzeMatch(matchId)
         
-    
+def extract_values(obj, key):
+    arr = []
+
+    def extract(obj, arr, key):
+        if isinstance(obj, dict):
+            for k, v in obj.items():
+                if isinstance(v, (dict, list)):
+                    extract(v, arr, key)
+                elif k == key:
+                    arr.append(v)
+        elif isinstance(obj, list):
+            for item in obj:
+                extract(item, arr, key)
+        return arr
+    results = extract(obj, arr, key)
+    return results
+
+#Getting Current Champions 
+ChampionData = "http://ddragon.leagueoflegends.com/cdn/6.24.1/data/en_US/champion.json"
+ChampionJson = requests.get(ChampionData).json()
+
+champ_names = extract_values(ChampionJson, 'name')
+champ_keys = extract_values(ChampionJson, 'key')
+
+champs = dict(zip(champ_keys, champ_names))
+print(champs)
+ 
 while True:
 
     Summoner_Raw = input('Enter Summoner Name: ')
@@ -93,7 +118,7 @@ while True:
     if Summoner_Raw == "quit" or Summoner_Raw == "q":
         print("Quitting...")
         break
-    SummonerName = 'https://na1.api.riotgames.com/lol/summoner/v3/summoners/by-name/'+ Summoner +'?api_key=' + RIOT_API_KEY
+    SummonerName = 'https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/'+ Summoner +'?api_key=' + RIOT_API_KEY
 
     json_data_summonerID = requests.get(SummonerName).json()
     
@@ -105,7 +130,9 @@ while True:
         print("No Summoner Found!")
         status = json_data_summonerID['status']['message']
     if status == "OK":
+        #print(accountId)
         matchHistory(accountId)
+        
         break
     else:
         status = "OK"
